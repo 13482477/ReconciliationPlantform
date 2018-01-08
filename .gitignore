@@ -1,0 +1,7 @@
+/target/
+/.classpath
+/.project
+/JFDF.iml
+/.settings
+/log.log*
+/.springBeans
