@@ -3,6 +3,39 @@
 	<resource name="首页" code="index" type="MENU" url="/index/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard">
 		<resource name="首页页面" code="index_page" type="RESOURCE" url="/index/page" httpMethod="GET" />
 	</resource>
+	<resource name="数据管理" code="data_management" type="MENU" httpMethod="GET"  iconType="ICON" iconPath="fa-dashboard">
+		<resource name="数据同步管理" code="data_synchronization_management" type="MENU" url="/dataSynchronization/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard" />
+	</resource>
+	<resource name="对账管理" code="index" type="MENU" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard">
+		<resource name="交易管理" code="transaction_management" type="MENU" url="/transaction/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard"/>
+		<resource name="支付管理" code="payment_management" type="MENU" url="/payment/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard"/>
+		<resource name="对账管理" code="reconcilization_management" type="MENU" url="/reconcilization/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard"/>
+	</resource>
+	<resource name="财务管理" code="accounting_management" type="MENU" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard">
+		<resource name="记账规则管理" code="recording_rule" type="MENU" url="/recordingRule/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard"/>
+		<resource name="原始凭证管理" code="accounting_document_management" type="MENU" url="/accountingDocument/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard"/>
+		<resource name="日结凭证管理" code="daily_document_management" type="MENU" url="/dailyDocument/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard"/>
+	</resource>
+	<resource name="主数据管理" code="main_data_management" type="MENU" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard">
+		<resource name="支付渠道管理" code="payment_channel_management" type="MENU" url="/paymentChannel/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard">
+			<resource name="支付渠道页面" code="payment_channel_page" type="RESOURCE" url="/paymentChannel/page" httpMethod="GET" />
+			<resource name="支付渠道新增" code="payment_channel_create" type="RESOURCE" url="/paymentChannel" httpMethod="POST" />
+			<resource name="支付渠道详情" code="payment_channel_read" type="RESOURCE" url="/paymentChannel/{id}" httpMethod="GET" />
+			<resource name="支付渠道编辑" code="payment_channel_update" type="RESOURCE" url="/paymentChannel/{id}" httpMethod="PUT" />
+			<resource name="支付渠道删除" code="payment_channel_delete" type="RESOURCE" url="/paymentChannel/{id}" httpMethod="DELETE" />
+			<resource name="支付渠道查询" code="payment_channel_find" type="RESOURCE" url="/paymentChannels" httpMethod="GET" />
+			<resource name="支付渠道校验" code="payment_channel_validation" type="RESOURCE" url="/paymentChannel/validation" httpMethod="GET" />
+		</resource>
+		<resource name="门店管理" code="store_management" type="MENU" url="/store/page" httpMethod="GET" iconType="ICON" iconPath="fa-dashboard">
+			<resource name="门店页面" code="store_page" type="RESOURCE" url="/store/page" httpMethod="GET" />
+			<resource name="门店新增" code="store_create" type="RESOURCE" url="/store" httpMethod="POST" />
+			<resource name="门店详情" code="store_read" type="RESOURCE" url="/store/{id}" httpMethod="GET" />
+			<resource name="门店编辑" code="store_update" type="RESOURCE" url="/store/{id}" httpMethod="PUT" />
+			<resource name="门店删除" code="store_delete" type="RESOURCE" url="/store/{id}" httpMethod="DELETE" />
+			<resource name="门店查询" code="store_find" type="RESOURCE" url="/stores" httpMethod="GET" />
+			<resource name="门店校验" code="store_validation" type="RESOURCE" url="/store/validation" httpMethod="GET" />
+		</resource>
+	</resource>
 	<resource name="系统管理" code="system_management" type="MENU" httpMethod="GET" iconType="ICON" iconPath="fa-cog">
 		<resource name="用户管理" code="user_management" type="MENU" url="/user/page" httpMethod="GET" iconType="ICON" iconPath="fa-user">
 			<resource name="用户页面" code="user_page" type="RESOURCE" url="/user/page" httpMethod="GET" />
@@ -48,6 +81,15 @@
 		<resource name="权限管理" code="authority_management" type="MENU" url="/authority/page" httpMethod="GET" iconType="ICON" iconPath="fa-user-secret">
 			<resource name="权限页面" code="authority_page" type="RESOURCE" url="/authority/page" httpMethod="GET" />
 			<resource name="权限查询" code="authority_find" type="RESOURCE" url="/authorities" httpMethod="GET" />
+		</resource>
+		<resource name="定时任务管理" code="task_management" type="MENU" url="/task/page" httpMethod="GET" iconType="ICON" iconPath="fa-user-secret">
+			<resource name="定时任务页面" code="task_page" type="RESOURCE" url="/task/page" httpMethod="GET" />
+			<resource name="定时任务校验" code="task_validation" type="RESOURCE" url="/task/validation" httpMethod="GET" />
+			<resource name="定时任务新增" code="task_create" type="RESOURCE" url="/task" httpMethod="POST" />
+			<resource name="定时任务详情" code="task_read" type="RESOURCE" url="/task/{id}" httpMethod="GET" />
+			<resource name="定时任务编辑" code="task_update" type="RESOURCE" url="/task/{id}" httpMethod="PUT" />
+			<resource name="定时任务删除" code="task_delete" type="RESOURCE" url="/task/{id}" httpMethod="DELETE" />
+			<resource name="定时任务查询" code="task_find" type="RESOURCE" url="/tasks" httpMethod="GET" />
 		</resource>
 	</resource>
 </resource>

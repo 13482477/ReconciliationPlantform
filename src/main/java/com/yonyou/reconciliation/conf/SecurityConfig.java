@@ -95,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
 		filterSecurityInterceptor.setAccessDecisionManager(this.accessDecisionManager());
 		filterSecurityInterceptor.setSecurityMetadataSource(this.securityMetadataSource());
-		filterSecurityInterceptor.setRejectPublicInvocations(true);
+		filterSecurityInterceptor.setRejectPublicInvocations(false);
 		return filterSecurityInterceptor;
 	}
 	

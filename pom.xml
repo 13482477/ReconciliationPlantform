@@ -6,12 +6,13 @@
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.2.RELEASE</version>
+    	<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.7.RELEASE</version>
 	</parent>
 
 	<properties>
 		<com.fasterxml.jackson>2.8.0</com.fasterxml.jackson>
+		<quartz.version>2.2.1</quartz.version>
 	</properties>
 
 	<dependencies>
@@ -45,6 +46,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
@@ -134,6 +136,16 @@
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>${quartz.version}</version>
 		</dependency>
 	</dependencies>
 

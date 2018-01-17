@@ -49,7 +49,7 @@ public class ValidatorUtils {
 		}
 	}
 	
-	public static Boolean evaluateUnique(Object target, String[] fields, Class<?> targetClazz, String primaryKey) {
+	public static Boolean evaluateUnique(Object target, Class<?> targetClazz, String primaryKey, String... fields) {
 		List<?> resultList = obtainValidationResult(target, fields, targetClazz, primaryKey);
 		return CollectionUtils.isEmpty(resultList);
 	}

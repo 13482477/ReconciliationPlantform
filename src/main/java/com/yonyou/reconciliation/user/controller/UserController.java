@@ -78,7 +78,7 @@ public class UserController {
 	@ResponseBody
 	public FieldValidationResult validateField(UserDto roleDto) {
 		FieldValidationResult result = new FieldValidationResult();
-		result.setValid(ValidatorUtils.evaluateUnique(roleDto, new String[] { "username" }, User.class, "id"));
+		result.setValid(ValidatorUtils.evaluateUnique(roleDto, User.class, "id", "username"));
 		return result;
 	}
 

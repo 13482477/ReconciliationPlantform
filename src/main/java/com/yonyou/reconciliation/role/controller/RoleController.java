@@ -70,7 +70,7 @@ public class RoleController {
 	@ResponseBody
 	public FieldValidationResult validateField(RoleDto roleDto) {
 		FieldValidationResult result = new FieldValidationResult();
-		result.setValid(ValidatorUtils.evaluateUnique(roleDto, new String[] {"roleCode"}, Role.class, "id"));
+		result.setValid(ValidatorUtils.evaluateUnique(roleDto, Role.class, "id", "roleCode"));
 		return result;
 	}
 	
