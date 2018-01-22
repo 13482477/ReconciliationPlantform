@@ -38,7 +38,6 @@ public class TaskService {
 	@Transactional
 	public void save(Task task) {
 		this.taskRepository.save(task);
-		this.addTaskToScheduler(task);
 	}
 
 	@Transactional
@@ -75,23 +74,71 @@ public class TaskService {
 		}, pageable);
 	}
 
-	private void addTaskToScheduler(Task task) {
+	public JobDetail getJobDetailFromSchema(Long taskId) {
+		Task task = this.taskRepository.findOne(taskId);
+
+		try {
+			return task == null ? null : this.scheduler.getJobDetail(JobKey.jobKey(task.getTaskName(), task.getTaskGroup()));
+		} catch (SchedulerException e) {
+			throw new RuntimeException("Can not found job detail with JobKey", e);
+		}
+	}
+
+	public void start(Long taskId) {
+		Task task = this.taskRepository.findOne(taskId);
+
+		if (task == null) {
+			throw new RuntimeException("The task is not exists!");
+		}
 
 		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskName(), task.getTaskGroup());
+
 		try {
 			CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-			if (trigger != null) {
-				return;
-			}
-
 			JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class).withIdentity(task.getTaskName(), task.getTaskGroup()).storeDurably(Boolean.TRUE).requestRecovery(Boolean.TRUE).build();
 
 			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(task.getCron());
 			trigger = TriggerBuilder.newTrigger().withIdentity(task.getTaskName(), task.getTaskGroup()).withSchedule(scheduleBuilder).build();
-			scheduler.scheduleJob(jobDetail, trigger);
-
+			
+			JobKey jobKey = JobKey.jobKey(task.getTaskName(), task.getTaskGroup());
+			
+			if (!scheduler.checkExists(jobKey)) {
+				scheduler.scheduleJob(jobDetail, trigger);
+			}
+			else {
+				scheduler.resumeJob(jobKey);
+			}
+			
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Start job field", e);
+		}
+	}
+
+	public void pause(Long taskId) {
+		Task task = this.taskRepository.findOne(taskId);
+
+		if (task == null) {
+			throw new RuntimeException("The task is not exists!");
+		}
+
+		try {
+			this.scheduler.pauseJob(JobKey.jobKey(task.getTaskName(), task.getTaskGroup()));
+		} catch (SchedulerException e) {
+			throw new RuntimeException("Stop job field", e);
+		}
+	}
+
+	public void stop(Long taskId) {
+		Task task = this.taskRepository.findOne(taskId);
+
+		if (task == null) {
+			throw new RuntimeException("The task is not exists!");
+		}
+
+		try {
+			this.scheduler.deleteJob(JobKey.jobKey(task.getTaskName(), task.getTaskGroup()));
+		} catch (SchedulerException e) {
+			throw new RuntimeException("Stop job field", e);
 		}
 	}
 

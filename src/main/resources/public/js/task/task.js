@@ -1,3 +1,63 @@
+function start(taskId) {
+	$.ajax({
+		async : true,
+		type : 'POST',
+		url : '/task/' + taskId + '/start' ,
+		headers : {
+			'X-CSRF-TOKEN' : $('#_csrf').val()
+		},
+		data : {
+			
+		},
+		beforeSend : function(XHR, settings) {
+			$('body').loading('start');
+			return true;
+		},
+		success : function(data, textStatus, XHR) {
+			swal("任务已启动", '', "success");
+		},
+		error : function(XHR, status , errorThrown) {
+			swal("请求错误", XHR.responseJSON.message, "error");
+		},
+		complete : function(XHR, TS) {
+			$('body').loading('stop');
+		}
+	});
+}
+
+function pause(taskId) {
+	$.ajax({
+		async : true,
+		type : 'POST',
+		url : '/task/' + taskId + '/pause' ,
+		headers : {
+			'X-CSRF-TOKEN' : $('#_csrf').val()
+		},
+		data : {
+			
+		},
+		beforeSend : function(XHR, settings) {
+			$('body').loading('start');
+			return true;
+		},
+		success : function(data, textStatus, XHR) {
+			swal("任务已暂停", '', "success");
+		},
+		error : function(XHR, status , errorThrown) {
+			swal("请求错误", XHR.responseJSON.message, "error");
+		},
+		complete : function(XHR, TS) {
+			$('body').loading('stop');
+		}
+	});
+}
+
+function stop(taskId) {
+	alert(taskId);
+}
+
+
+
 $(function() {
 	"use strict";
 	
@@ -79,7 +139,30 @@ $(function() {
 	    	field : 'taskGroup',
 	    	title : '任务组',
 	    	sortable : true
+	    }, {
+	    	field : 'operate',
+	    	title : '操作',
+	    	align : 'center',
+	    	clickToSelect : false,
+	    	formatter : function(value, row, index) {
+	    		var strArray = [
+	    			'<a href="javascript:void(0);" onclick="start(' + row.id + ');">',
+	    			'<i class="fa fa-play"></i>',
+	    			'</a>&nbsp;&nbsp;&nbsp;',
+	    			'<a href="javascript:void(0);" onclick="pause(' + row.id + ');" class="">',
+	    			'<i class="fa fa-pause"></i>',
+	    			'</a>&nbsp;&nbsp;&nbsp;',
+	    			'<a href="javascript:void(0);" onclick="stop(' + row.id + ');" class="">',
+	    			'<i class="fa fa-stop"></i>',
+	    			'</a>&nbsp;&nbsp;&nbsp;',
+	    		]
+	    		return strArray.join('');
+	    	}
 	    }]
+	});
+	
+	$('start').bind('click', function(){
+		alert(1);
 	});
 	
 	$('#searchButton').bind('click', function(){
