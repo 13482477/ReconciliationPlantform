@@ -1,7 +1,12 @@
 package com.yonyou.reconciliation.task.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.criteria.Predicate;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -12,6 +17,8 @@ import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.yonyou.reconciliation.task.entity.Task;
@@ -27,35 +34,67 @@ public class TaskService {
 
 	@Autowired
 	private TaskRepository taskRepository;
-	
-	
+
+	@Transactional
+	public void save(Task task) {
+		this.taskRepository.save(task);
+		this.addTaskToScheduler(task);
+	}
+
+	@Transactional
+	public void update(Task task) {
+		this.taskRepository.saveAndFlush(task);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		this.taskRepository.delete(id);
+	}
+
+	public Page<Task> find(String cron, TaskStatus taskStatus, String taskName, String taskGroup, Pageable pageable) {
+		return this.taskRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
+			List<Predicate> predicates = new ArrayList<Predicate>();
+
+			if (StringUtils.isNotBlank(cron)) {
+				predicates.add(criteriaBuilder.equal(root.get("cron"), cron));
+			}
+
+			if (taskStatus != null) {
+				predicates.add(criteriaBuilder.equal(root.get("taskStatus"), taskStatus));
+			}
+
+			if (StringUtils.isNotBlank(taskName)) {
+				predicates.add(criteriaBuilder.equal(root.get("taskName"), taskName));
+			}
+
+			if (StringUtils.isNotBlank(taskGroup)) {
+				predicates.add(criteriaBuilder.equal(root.get("taskGroup"), taskGroup));
+			}
+
+			return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));
+		}, pageable);
+	}
+
 	private void addTaskToScheduler(Task task) {
-		
+
 		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskName(), task.getTaskGroup());
 		try {
 			CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
 			if (trigger != null) {
 				return;
 			}
-			
-			JobDetail jobDetail = JobBuilder
-					.newJob(SimpleJob.class)
-					.withIdentity(task.getTaskName(), task.getTaskGroup())
-					.storeDurably(Boolean.TRUE)
-					.requestRecovery(Boolean.TRUE)
-					.build();
-			
+
+			JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class).withIdentity(task.getTaskName(), task.getTaskGroup()).storeDurably(Boolean.TRUE).requestRecovery(Boolean.TRUE).build();
+
 			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(task.getCron());
 			trigger = TriggerBuilder.newTrigger().withIdentity(task.getTaskName(), task.getTaskGroup()).withSchedule(scheduleBuilder).build();
 			scheduler.scheduleJob(jobDetail, trigger);
-			
+
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
 	private void updateTaskInScheduler(Task task) {
 		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskName(), task.getTaskGroup());
 		try {
@@ -63,30 +102,26 @@ public class TaskService {
 			if (trigger == null) {
 				return;
 			}
-			
+
 			JobDetail jobDetail = JobBuilder.newJob().build();
 			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(task.getCron());
 			trigger = TriggerBuilder.newTrigger().withIdentity(task.getTaskName(), task.getTaskGroup()).withSchedule(scheduleBuilder).build();
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	private void registTask(Task task) {
 		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskName(), task.getTaskGroup());
 		try {
 			CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-			
-			
+
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-		
-		
-		
 
 	public void refreshTrigger() {
 		try {
@@ -97,7 +132,7 @@ public class TaskService {
 					TaskStatus taskStatus = task.getTaskStatus();
 					TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskName(), task.getTaskGroup());
 					CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-					
+
 					if (null == trigger) {
 						if (TaskStatus.DISABLE.equals(taskStatus)) {
 							continue;

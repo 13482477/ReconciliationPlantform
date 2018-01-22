@@ -1,5 +1,5 @@
 <#include "/layout/mainLayout.ftl" encoding="utf8">
-<@base baseTitle="渠道管理" 
+<@base baseTitle="定时任务管理" 
 		baseCss=[
 		"/lib/bootstrap/dist/css/bootstrap.min.css",
 		"/lib/select2/dist/css/select2.min.css",
@@ -42,20 +42,31 @@
 		"/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js",
 		"/lib/jquery-loading/dist/jquery.loading.min.js",
 		"/lib/sweetalert/docs/assets/sweetalert/sweetalert.min.js",
-		"/js/paymentChannel/paymentChannel.js"
+		"/js/task/task.js"
 		] 
 		>
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-primary">
-			<div class="box-header with-border">支付渠道</div>
+			<div class="box-header with-border">定时任务</div>
 			<div class="box-body">
 				<div id="searchBar" class="form-inline" role="form">
 					<div class="form-group">
-						<span><strong>渠道名称: </strong></span><input id="channelName" name="channelName" class="form-control input-sm" type="text">
+						<span><strong>时间表达式: </strong></span><input id="cron" name="cron" class="form-control input-sm" type="text">
 					</div>
 					<div class="form-group">
-						<span><strong>渠道代码: </strong></span><input id="channelCode" name="channelCode" class="form-control input-sm" type="text">
+						<span><strong>使用状态: </strong></span>
+						<select id="taskStatus" name="taskStatus" class="form-control input-sm">
+							<option value="">--请选择--</option>
+							<option value="ENABLE">可用</option>
+							<option value="DISABLE">不可用</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<span><strong>任务名称: </strong></span><input id="taskName" name="taskName" class="form-control input-sm" type="text">
+					</div>
+					<div class="form-group">
+						<span><strong>任务分组: </strong></span><input id="taskGroup" name="taskGroup" class="form-control input-sm" type="text">
 					</div>
 					<div class="form-group">
 						<a id="searchButton" class="btn btn-primary btn-flat btn-sm" title="查询">
@@ -105,14 +116,32 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>渠道名称</label>
-								<input type="text" id="channelName" name="channelName" placeholder="请输入..." class="form-control input-sm" />
+								<label>时间表达式</label>
+								<input type="text" id="cron" name="cron" placeholder="请输入..." class="form-control input-sm" />
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>渠道代码</label>
-								<input type="text" id="channelCode" name="channelCode" placeholder="请输入..." class="form-control input-sm" />
+								<select id="taskStatus" name="taskStatus" class="form-control input-sm">
+									<option value="">--请选择--</option>
+									<option value="ENABLE">可用</option>
+									<option value="DISABLE">不可用</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>任务名称</label>
+								<input type="text" id="taskName" name="taskName" placeholder="请输入..." class="form-control input-sm" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>任务分组</label>
+								<input type="text" id="taskGroup" name="taskGroup" placeholder="请输入..." class="form-control input-sm" />
 							</div>
 						</div>
 					</div>

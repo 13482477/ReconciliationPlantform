@@ -2,7 +2,7 @@ package com.yonyou.reconciliation.web.validator.field;
 
 public class FieldValidationResult {
 	
-	private Boolean valid;
+	private Boolean valid = Boolean.TRUE;
 	
 	private String message;
 	
