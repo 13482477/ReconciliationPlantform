@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -91,14 +92,12 @@ public class TaskService {
 			throw new RuntimeException("The task is not exists!");
 		}
 
-		TriggerKey triggerKey = TriggerKey.triggerKey(task.getTaskName(), task.getTaskGroup());
-
 		try {
-			CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-			JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class).withIdentity(task.getTaskName(), task.getTaskGroup()).storeDurably(Boolean.TRUE).requestRecovery(Boolean.TRUE).build();
+			CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(task.getTaskName(), task.getTaskGroup()).withSchedule(CronScheduleBuilder.cronSchedule(task.getCron())).build();
+			
+			JobDataMap jobDataMap = new JobDataMap();
 
-			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(task.getCron());
-			trigger = TriggerBuilder.newTrigger().withIdentity(task.getTaskName(), task.getTaskGroup()).withSchedule(scheduleBuilder).build();
+			JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class).withIdentity(task.getTaskName(), task.getTaskGroup()).storeDurably(Boolean.TRUE).requestRecovery(Boolean.TRUE).build();
 			
 			JobKey jobKey = JobKey.jobKey(task.getTaskName(), task.getTaskGroup());
 			

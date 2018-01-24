@@ -1,6 +1,8 @@
 package com.yonyou.reconciliation.task.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -45,6 +48,12 @@ public class Task implements Serializable {
 	 * 任务组
 	 */
 	private String taskGroup;
+	
+	/**
+	 * 任务参数
+	 */
+	@OneToMany(mappedBy = "task")
+	private List<TaskAttribute> taskAttributes = new ArrayList<TaskAttribute>();
 
 	public Long getId() {
 		return id;
@@ -84,6 +93,14 @@ public class Task implements Serializable {
 
 	public void setTaskGroup(String taskGroup) {
 		this.taskGroup = taskGroup;
+	}
+
+	public List<TaskAttribute> getTaskAttributes() {
+		return taskAttributes;
+	}
+
+	public void setTaskAttributes(List<TaskAttribute> taskAttributes) {
+		this.taskAttributes = taskAttributes;
 	}
 	
 }

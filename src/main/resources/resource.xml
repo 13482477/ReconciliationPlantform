@@ -90,6 +90,8 @@
 			<resource name="定时任务编辑" code="task_update" type="RESOURCE" url="/task/{id}" httpMethod="PUT" />
 			<resource name="定时任务删除" code="task_delete" type="RESOURCE" url="/task/{id}" httpMethod="DELETE" />
 			<resource name="定时任务查询" code="task_find" type="RESOURCE" url="/tasks" httpMethod="GET" />
+			<resource name="定时任务开始" code="task_start" type="RESOURCE" url="/task/{id}/start" httpMethod="POST" />
+			<resource name="定时任务暂停" code="task_pause" type="RESOURCE" url="/task/{id}/pause" httpMethod="POST" />
 		</resource>
 	</resource>
 </resource>

@@ -11,30 +11,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+import com.yonyou.reconciliation.initializer.QuartzScriptInitializer;
+
 @Configuration
 public class QuartzConfig {
-	
-	@Autowired 
+
+	@Autowired
 	private DataSource dataSource;
-	
-	
+
 	public static class AutowireSpringBeanJobFactory extends SpringBeanJobFactory {
-		
+
 		@Autowired
 		private AutowireCapableBeanFactory capableBeanFactory;
-		
+
 		@Override
 		protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
 			Object jobInstance = super.createJobInstance(bundle);
 			this.capableBeanFactory.autowireBean(jobInstance);
 			return jobInstance;
 		}
-		
+
 	}
 
 	@Bean
@@ -64,10 +67,17 @@ public class QuartzConfig {
 		schedulerFactoryBean.setJobFactory(this.jobFactory());
 		return schedulerFactoryBean;
 	}
+
+	@Bean
+	public Scheduler scheduler() {
+		return schedulerFactoryBean().getScheduler();
+	}
 	
 	@Bean
-    public Scheduler scheduler() {  
-      return schedulerFactoryBean().getScheduler();  
-    }  
+	public QuartzScriptInitializer quartzScriptInitializer() {
+		QuartzScriptInitializer quartzScriptInitializer = new QuartzScriptInitializer();
+		return quartzScriptInitializer;
+	}
+	
 
 }
