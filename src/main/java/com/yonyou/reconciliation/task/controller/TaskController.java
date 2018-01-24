@@ -114,37 +114,36 @@ public class TaskController {
 			return taskDto;
 		});
 	}
-
+	
 	@RequestMapping(value = "/task/{id}/start", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> start(@PathVariable Long id) {
 		Task task = this.taskRepository.findOne(id);
-
+		
 		if (task == null) {
 			ErrorResult errorResult = new ErrorResult();
 			errorResult.setStatus(HttpStatus.BAD_REQUEST.value());
-			errorResult.setMessage("任务不存在");
+			errorResult.setMessage("该任务不存在");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResult);
 		}
-
+		
 		this.taskService.start(id);
 		return ResponseEntity.ok(null);
 	}
-
+	
 	@RequestMapping(value = "/task/{id}/pause", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> pause(@PathVariable Long id) {
 		Task task = this.taskRepository.findOne(id);
-
+		
 		if (task == null) {
 			ErrorResult errorResult = new ErrorResult();
 			errorResult.setStatus(HttpStatus.BAD_REQUEST.value());
-			errorResult.setMessage("任务不存在");
+			errorResult.setMessage("该任务不存在");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResult);
 		}
-
+		
 		this.taskService.pause(id);
 		return ResponseEntity.ok(null);
 	}
-
 }
