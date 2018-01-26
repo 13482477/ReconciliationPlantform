@@ -147,4 +147,20 @@ public class TaskController {
 		this.taskService.pause(id);
 		return ResponseEntity.ok(null);
 	}
+	
+	@RequestMapping(value = "/task/{id}/stop", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> stop(@PathVariable Long id) {
+		Task task = this.taskRepository.findOne(id);
+		
+		if (task == null) {
+			ErrorResult errorResult = new ErrorResult();
+			errorResult.setStatus(HttpStatus.BAD_REQUEST.value());
+			errorResult.setMessage("该任务不存在");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResult);
+		}
+		
+		this.taskService.stop(id);
+		return ResponseEntity.ok(null);
+	}
 }

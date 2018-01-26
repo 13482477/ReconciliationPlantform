@@ -7,6 +7,7 @@ import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -44,7 +45,19 @@ public class TaskService {
 	public void update(Task task) {
 		this.taskRepository.saveAndFlush(task);
 	}
-
+	
+	@Transactional
+	public void updateTaskStatusById(TaskStatus taskStatus, Long id) {
+		Task task = this.taskRepository.findOne(id);
+		task.setTaskStatus(taskStatus);
+		this.taskRepository.saveAndFlush(task);
+	}
+	
+	@Transactional
+	public Task findOne(Long id) {
+		return this.taskRepository.findOne(id);
+	}
+	
 	@Transactional
 	public void delete(Long id) {
 		this.taskRepository.delete(id);
@@ -117,6 +130,7 @@ public class TaskService {
 		this.taskRepository.saveAndFlush(task);
 	}
 
+	@Transactional
 	public void pause(Long taskId) {
 		Task task = this.taskRepository.findOne(taskId);
 
@@ -129,8 +143,12 @@ public class TaskService {
 		} catch (SchedulerException e) {
 			throw new RuntimeException("Stop job failed", e);
 		}
+		
+		task.setTaskStatus(TaskStatus.PAUSE);
+		this.taskRepository.saveAndFlush(task);
 	}
 
+	@Transactional
 	public void stop(Long taskId) {
 		Task task = this.taskRepository.findOne(taskId);
 
@@ -143,6 +161,9 @@ public class TaskService {
 		} catch (SchedulerException e) {
 			throw new RuntimeException("Stop job failed", e);
 		}
+		
+		task.setTaskStatus(TaskStatus.STOP);
+		this.taskRepository.saveAndFlush(task);
 	}
 
 }

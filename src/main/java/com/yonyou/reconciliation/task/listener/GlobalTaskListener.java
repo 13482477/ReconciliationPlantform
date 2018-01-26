@@ -1,8 +1,7 @@
 package com.yonyou.reconciliation.task.listener;
 
 import java.util.Date;
-
-import javax.transaction.Transactional;
+import java.util.List;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -15,12 +14,11 @@ import org.springframework.stereotype.Component;
 import com.yonyou.reconciliation.task.entity.Task;
 import com.yonyou.reconciliation.task.entity.TaskAttribute;
 import com.yonyou.reconciliation.task.entity.TaskStatus;
-import com.yonyou.reconciliation.task.repository.TaskRepository;
+import com.yonyou.reconciliation.task.service.TaskAttributeService;
 import com.yonyou.reconciliation.task.service.TaskService;
 import com.yonyou.reconciliation.taskinstance.entity.TaskAttributeInstance;
 import com.yonyou.reconciliation.taskinstance.entity.TaskInstance;
 import com.yonyou.reconciliation.taskinstance.entity.TaskInstanceStatus;
-import com.yonyou.reconciliation.taskinstance.repository.TaskInstanceRepository;
 import com.yonyou.reconciliation.taskinstance.service.TaskInstanceService;
 
 @Component
@@ -36,33 +34,28 @@ public class GlobalTaskListener implements JobListener {
 	private TaskService taskService;
 	
 	@Autowired
-	private TaskRepository taskRepository;
-
+	private TaskAttributeService taskAttributeService;
+	
 	@Autowired
 	private TaskInstanceService taskInstanceService;
 	
-	@Autowired
-	private TaskInstanceRepository taskInstanceRepository;
-
 	@Override
 	public String getName() {
 		return "GlobalTaskListener";
 	}
 
 	@Override
-	@Transactional
 	public void jobToBeExecuted(JobExecutionContext context) {
 		LOGGER.info("jobToBeExecuted");
 		Long taskId = (Long) context.getJobDetail().getJobDataMap().getLong(TASK_ID);
 		
-		Task task = this.taskRepository.findOne(taskId);
+		Task task = this.taskService.findOne(taskId);
 		
 		TaskInstance taskInstance = this.generateTaskInstance(task);
 		this.taskInstanceService.save(taskInstance);
 		context.put(TASK_INSTANCE_ID, taskInstance.getId());
 
-		task.setTaskStatus(TaskStatus.RUNNING);
-		this.taskService.update(task);
+		this.taskService.updateTaskStatusById(TaskStatus.RUNNING, taskId);
 		context.put(TASK_ID, task.getId());
 	}
 	
@@ -75,7 +68,9 @@ public class GlobalTaskListener implements JobListener {
 		taskInstance.setCreateDate(new Date());
 		taskInstance.setExecuteDate(new Date());
 		
-		for (TaskAttribute taskAttribute : task.getTaskAttributes()) {
+		List<TaskAttribute> taskAttributes = this.taskAttributeService.findByTask(task);
+		
+		for (TaskAttribute taskAttribute : taskAttributes) {
 			TaskAttributeInstance taskAttributeInstance = this.generateTaskAttributeInstance(taskAttribute, taskInstance);
 			taskInstance.getTaskAttributeInstances().add(taskAttributeInstance);
 		}
@@ -101,22 +96,16 @@ public class GlobalTaskListener implements JobListener {
 	}
 
 	@Override
-	@Transactional
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
 		LOGGER.info("jobWasExecuted");
 		
 		Long taskId = (Long) context.get(TASK_ID);
 		Long taskInstanceId = (Long) context.get(TASK_INSTANCE_ID);
 		
-		TaskInstance taskInstance = this.taskInstanceRepository.findOne(taskInstanceId);
+		this.taskInstanceService.updateTaskInstanceStatusById(jobException == null ? TaskInstanceStatus.FINISHED : TaskInstanceStatus.FAILED, taskInstanceId);
+		this.taskInstanceService.updateFinishedDateById(jobException == null ? new Date() : null, taskInstanceId);
 		
-		taskInstance.setTaskInstanceStatus(jobException == null ? TaskInstanceStatus.FINISHED : TaskInstanceStatus.FAILED);
-		taskInstance.setFinishedDate(new Date());
-		this.taskInstanceService.update(taskInstance);
-		
-		Task task = this.taskRepository.findOne(taskId);
-		task.setTaskStatus(TaskStatus.PENDDING);
-		this.taskService.update(task);
+		this.taskService.updateTaskStatusById(TaskStatus.PENDDING, taskId);
 	}
 
 }
