@@ -109,7 +109,7 @@ public class TaskService {
 			}
 			
 		} catch (SchedulerException e) {
-			throw new RuntimeException("Start job field", e);
+			throw new RuntimeException("Start job failed", e);
 		}
 	}
 
@@ -123,7 +123,7 @@ public class TaskService {
 		try {
 			this.scheduler.pauseJob(JobKey.jobKey(task.getTaskName(), task.getTaskGroup()));
 		} catch (SchedulerException e) {
-			throw new RuntimeException("Stop job field", e);
+			throw new RuntimeException("Stop job failed", e);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class TaskService {
 		try {
 			this.scheduler.deleteJob(JobKey.jobKey(task.getTaskName(), task.getTaskGroup()));
 		} catch (SchedulerException e) {
-			throw new RuntimeException("Stop job field", e);
+			throw new RuntimeException("Stop job failed", e);
 		}
 	}
 
