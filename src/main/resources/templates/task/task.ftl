@@ -58,8 +58,9 @@
 						<span><strong>使用状态: </strong></span>
 						<select id="taskStatus" name="taskStatus" class="form-control input-sm">
 							<option value="">--请选择--</option>
-							<option value="ENABLE">可用</option>
-							<option value="DISABLE">不可用</option>
+							<option value="STOP">停止</option>
+							<option value="RUNNING">运行中</option>
+							<option value="PAUSE">暂停</option>
 						</select>
 					</div>
 					<div class="form-group">
@@ -122,12 +123,6 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>渠道代码</label>
-								<select id="taskStatus" name="taskStatus" class="form-control input-sm">
-									<option value="">--请选择--</option>
-									<option value="ENABLE">可用</option>
-									<option value="DISABLE">不可用</option>
-								</select>
 							</div>
 						</div>
 					</div>

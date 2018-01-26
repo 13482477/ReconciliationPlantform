@@ -6,7 +6,10 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.spi.TriggerFiredBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -17,13 +20,16 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 import com.yonyou.reconciliation.initializer.QuartzScriptInitializer;
+import com.yonyou.reconciliation.task.listener.GlobalTaskListener;
 
 @Configuration
 public class QuartzConfig {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(QuartzConfig.class);
 
 	@Autowired
 	private DataSource dataSource;
-
+	
 	public static class AutowireSpringBeanJobFactory extends SpringBeanJobFactory {
 
 		@Autowired
@@ -52,7 +58,7 @@ public class QuartzConfig {
 			propertiesFactoryBean.afterPropertiesSet();
 			return propertiesFactoryBean.getObject();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Process quartz.properties file error.", e);
 		}
 		return null;
 	}
@@ -67,8 +73,17 @@ public class QuartzConfig {
 	}
 
 	@Bean
-	public Scheduler scheduler() {
-		return schedulerFactoryBean().getScheduler();
+	public Scheduler scheduler(@Autowired GlobalTaskListener globalTaskListener) {
+		Scheduler scheduler = this.schedulerFactoryBean().getScheduler();
+		
+		try {
+			scheduler.getListenerManager().addJobListener(globalTaskListener);
+		} catch (SchedulerException e) {
+			LOGGER.error("Can not add global task listener into scheduler.", e);
+			throw new RuntimeException(e);
+		}
+		
+		return scheduler;
 	}
 	
 	@Bean

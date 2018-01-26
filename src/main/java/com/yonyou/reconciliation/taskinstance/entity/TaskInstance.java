@@ -1,6 +1,8 @@
 package com.yonyou.reconciliation.taskinstance.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -62,6 +65,12 @@ public class TaskInstance {
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date finishedDate;
+	
+	/**
+	 * 任务属性实例
+	 */
+	@OneToMany(mappedBy = "taskInstance")
+	private List<TaskAttributeInstance> taskAttributeInstances = new ArrayList<TaskAttributeInstance>();
 	
 	/**
 	 * 任务
@@ -132,6 +141,14 @@ public class TaskInstance {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+
+	public List<TaskAttributeInstance> getTaskAttributeInstances() {
+		return taskAttributeInstances;
+	}
+
+	public void setTaskAttributeInstances(List<TaskAttributeInstance> taskAttributeInstances) {
+		this.taskAttributeInstances = taskAttributeInstances;
 	}
 
 }
