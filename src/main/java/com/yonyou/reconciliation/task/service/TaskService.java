@@ -84,6 +84,7 @@ public class TaskService {
 		}
 	}
 
+	@Transactional
 	public void start(Long taskId) {
 		Task task = this.taskRepository.findOne(taskId);
 
@@ -111,6 +112,9 @@ public class TaskService {
 		} catch (SchedulerException e) {
 			throw new RuntimeException("Start job failed", e);
 		}
+		
+		task.setTaskStatus(TaskStatus.PENDDING);
+		this.taskRepository.saveAndFlush(task);
 	}
 
 	public void pause(Long taskId) {

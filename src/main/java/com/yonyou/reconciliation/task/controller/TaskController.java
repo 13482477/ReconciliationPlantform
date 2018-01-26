@@ -63,6 +63,7 @@ public class TaskController {
 	@ResponseBody
 	public TaskDto create(@RequestBody @Validated TaskDto taskDto) {
 		Task task = taskDto.createEntity();
+		task.setTaskStatus(TaskStatus.STOP);
 
 		this.taskService.save(task);
 		return ConvertUtils.convert(task, input -> {

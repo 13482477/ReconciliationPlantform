@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import com.yonyou.reconciliation.task.entity.Task;
 import com.yonyou.reconciliation.task.entity.TaskAttribute;
+import com.yonyou.reconciliation.task.entity.TaskStatus;
 import com.yonyou.reconciliation.task.repository.TaskRepository;
+import com.yonyou.reconciliation.task.service.TaskService;
 import com.yonyou.reconciliation.taskinstance.entity.TaskAttributeInstance;
 import com.yonyou.reconciliation.taskinstance.entity.TaskInstance;
 import com.yonyou.reconciliation.taskinstance.entity.TaskInstanceStatus;
@@ -24,17 +26,20 @@ import com.yonyou.reconciliation.taskinstance.service.TaskInstanceService;
 @Component
 public class GlobalTaskListener implements JobListener {
 	
+	private static Logger LOGGER = LoggerFactory.getLogger(GlobalTaskListener.class);
+
 	private static final String TASK_ID = "taskId";
 	
 	private static final String TASK_INSTANCE_ID = "taskInstanceId";
-	
-	private static Logger LOGGER = LoggerFactory.getLogger(GlobalTaskListener.class);
-	
+
 	@Autowired
-	private TaskInstanceService taskInstanceService;
+	private TaskService taskService;
 	
 	@Autowired
 	private TaskRepository taskRepository;
+
+	@Autowired
+	private TaskInstanceService taskInstanceService;
 	
 	@Autowired
 	private TaskInstanceRepository taskInstanceRepository;
@@ -55,6 +60,10 @@ public class GlobalTaskListener implements JobListener {
 		TaskInstance taskInstance = this.generateTaskInstance(task);
 		this.taskInstanceService.save(taskInstance);
 		context.put(TASK_INSTANCE_ID, taskInstance.getId());
+
+		task.setTaskStatus(TaskStatus.RUNNING);
+		this.taskService.update(task);
+		context.put(TASK_ID, task.getId());
 	}
 	
 	private TaskInstance generateTaskInstance(Task task) {
@@ -96,6 +105,7 @@ public class GlobalTaskListener implements JobListener {
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
 		LOGGER.info("jobWasExecuted");
 		
+		Long taskId = (Long) context.get(TASK_ID);
 		Long taskInstanceId = (Long) context.get(TASK_INSTANCE_ID);
 		
 		TaskInstance taskInstance = this.taskInstanceRepository.findOne(taskInstanceId);
@@ -103,6 +113,10 @@ public class GlobalTaskListener implements JobListener {
 		taskInstance.setTaskInstanceStatus(jobException == null ? TaskInstanceStatus.FINISHED : TaskInstanceStatus.FAILED);
 		taskInstance.setFinishedDate(new Date());
 		this.taskInstanceService.update(taskInstance);
+		
+		Task task = this.taskRepository.findOne(taskId);
+		task.setTaskStatus(TaskStatus.PENDDING);
+		this.taskService.update(task);
 	}
 
 }

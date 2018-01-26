@@ -2,6 +2,6 @@ package com.yonyou.reconciliation.task.entity;
 
 public enum TaskStatus {
 	
-     STOP, RUNNING, PAUSE;
+     STOP, RUNNING, PAUSE, PENDDING;
 
 }
