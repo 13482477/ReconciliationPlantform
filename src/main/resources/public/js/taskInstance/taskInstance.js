@@ -1,89 +1,3 @@
-function start(taskId) {
-	$.ajax({
-		async : true,
-		type : 'POST',
-		url : '/task/' + taskId + '/start' ,
-		headers : {
-			'X-CSRF-TOKEN' : $('#_csrf').val()
-		},
-		data : {
-			
-		},
-		beforeSend : function(XHR, settings) {
-			$('body').loading('start');
-			return true;
-		},
-		success : function(data, textStatus, XHR) {
-			swal('任务已启动', '', 'success');
-			$('#table').bootstrapTable('refresh');
-		},
-		error : function(XHR, status , errorThrown) {
-			swal('请求错误', XHR.responseJSON.message, 'error');
-		},
-		complete : function(XHR, TS) {
-			$('body').loading('stop');
-		}
-	});
-}
-
-function pause(taskId) {
-	$.ajax({
-		async : true,
-		type : 'POST',
-		url : '/task/' + taskId + '/pause' ,
-		headers : {
-			'X-CSRF-TOKEN' : $('#_csrf').val()
-		},
-		data : {
-			
-		},
-		beforeSend : function(XHR, settings) {
-			$('body').loading('start');
-			return true;
-		},
-		success : function(data, textStatus, XHR) {
-			swal('任务已暂停', '', 'success');
-			$('#table').bootstrapTable('refresh');
-		},
-		error : function(XHR, status , errorThrown) {
-			swal('请求错误', XHR.responseJSON.message, 'error');
-		},
-		complete : function(XHR, TS) {
-			$('body').loading('stop');
-		}
-	});
-}
-
-function stop(taskId) {
-	$.ajax({
-		async : true,
-		type : 'POST',
-		url : '/task/' + taskId + '/stop' ,
-		headers : {
-			'X-CSRF-TOKEN' : $('#_csrf').val()
-		},
-		data : {
-			
-		},
-		beforeSend : function(XHR, settings) {
-			$('body').loading('start');
-			return true;
-		},
-		success : function(data, textStatus, XHR) {
-			swal('任务已停止', '', 'success');
-			$('#table').bootstrapTable('refresh');
-		},
-		error : function(XHR, status , errorThrown) {
-			swal('请求错误', XHR.responseJSON.message, 'error');
-		},
-		complete : function(XHR, TS) {
-			$('body').loading('stop');
-		}
-	});
-}
-
-
-
 $(function() {
 	"use strict";
 	
@@ -113,7 +27,7 @@ $(function() {
         clickToSelect : true,
         singleSelect : true,
         toolbar : '#toolbar',
-        url : '/tasks',
+        url : '/taskInstances',
         method : 'get',
         locale : 'zh_CN',
         paginationVAlign : 'both',
@@ -150,7 +64,7 @@ $(function() {
 	    	title : 'ID',
 	    	sortable : true
 	    }, {
-	    	field : 'cron',
+	    	field : 'taskName',
 	    	title : '时间表达式',
 	    	sortable : false
 	    },{

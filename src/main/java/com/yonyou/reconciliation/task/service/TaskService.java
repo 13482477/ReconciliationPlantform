@@ -7,7 +7,6 @@ import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Hibernate;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;

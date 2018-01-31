@@ -93,5 +93,10 @@
 			<resource name="定时任务开始" code="task_start" type="RESOURCE" url="/task/{id}/start" httpMethod="POST" />
 			<resource name="定时任务暂停" code="task_pause" type="RESOURCE" url="/task/{id}/pause" httpMethod="POST" />
 		</resource>
+		<resource name="任务实例" code="task_instance_management" type="MENU" url="/taskInstance/page" httpMethod="GET" iconType="ICON" iconPath="fa-user-secret">
+			<resource name="任务实例页面" code="task_page" type="RESOURCE" url="/taskInstance/page" httpMethod="GET" />
+			<resource name="任务实例详情" code="task_read" type="RESOURCE" url="/taskInstance/{id}" httpMethod="GET" />
+			<resource name="任务实例查询" code="task_find" type="RESOURCE" url="/taskInstances" httpMethod="GET" />
+		</resource>
 	</resource>
 </resource>
