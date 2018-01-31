@@ -14,6 +14,7 @@
 		"/lib/formvalidation.io/dist/css/formValidation.min.css",
 		"/lib/bootstrap-table/dist/bootstrap-table.min.css",
 		"/lib/jquery-loading/dist/jquery.loading.min.css",
+		"/lib/bootstrap-daterangepicker/daterangepicker.css",
 		"/css/adapter.css"
 		]
 		baseJs=[
@@ -42,32 +43,42 @@
 		"/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js",
 		"/lib/jquery-loading/dist/jquery.loading.min.js",
 		"/lib/sweetalert/docs/assets/sweetalert/sweetalert.min.js",
-		"/js/task/task.js"
+		"/lib/moment/locale/zh-cn.js",
+		"/lib/bootstrap-daterangepicker/daterangepicker.js",
+		"/js/app/app.js",
+		"/js/taskInstance/taskInstance.js"
 		] 
 		>
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-primary">
-			<div class="box-header with-border">定时任务</div>
+			<div class="box-header with-border">任务实例</div>
 			<div class="box-body">
 				<div id="searchBar" class="form-inline" role="form">
-					<div class="form-group">
-						<span><strong>时间表达式: </strong></span><input id="cron" name="cron" class="form-control input-sm" type="text">
-					</div>
-					<div class="form-group">
-						<span><strong>使用状态: </strong></span>
-						<select id="taskStatus" name="taskStatus" class="form-control input-sm">
-							<option value="">--请选择--</option>
-							<option value="STOP">停止</option>
-							<option value="RUNNING">运行中</option>
-							<option value="PAUSE">暂停</option>
-						</select>
-					</div>
 					<div class="form-group">
 						<span><strong>任务名称: </strong></span><input id="taskName" name="taskName" class="form-control input-sm" type="text">
 					</div>
 					<div class="form-group">
 						<span><strong>任务分组: </strong></span><input id="taskGroup" name="taskGroup" class="form-control input-sm" type="text">
+					</div>
+					<div class="form-group">
+						<span><strong>任务实例状态: </strong></span>
+						<select id="taskInstanceStatus" name="taskInstanceStatus" class="form-control input-sm">
+							<option value="">--请选择--</option>
+							<option value="NEW">新建</option>
+							<option value="RUNNING">运行中</option>
+							<option value="FINISHED">成功</option>
+							<option value="FAILED">失败</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<span><strong>创建时间: </strong></span><input id="createDate" name="createDate" class="form-control input-sm date-range-picker" readonly="readonly" type="text">
+					</div>
+					<div class="form-group">
+						<span><strong>执行时间: </strong></span><input id="executeDate" name="executeDate" class="form-control input-sm date-range-picker" readonly="readonly" type="text">
+					</div>
+					<div class="form-group">
+						<span><strong>完成时间: </strong></span><input id="executeDate" name="executeDate" class="form-control input-sm date-range-picker" readonly="readonly" type="text">
 					</div>
 					<div class="form-group">
 						<a id="searchButton" class="btn btn-primary btn-flat btn-sm" title="查询">

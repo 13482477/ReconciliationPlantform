@@ -128,6 +128,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		requestMap.put(new AntPathRequestMatcher("/swagger*/**"),  org.springframework.security.access.SecurityConfig.createList("permitAll"));
 		requestMap.put(new AntPathRequestMatcher("/file/*"),  org.springframework.security.access.SecurityConfig.createList("permitAll"));
 		requestMap.put(new AntPathRequestMatcher("/menu/refresh"),  org.springframework.security.access.SecurityConfig.createList("permitAll"));
+		requestMap.put(new AntPathRequestMatcher("/security.tld"),  org.springframework.security.access.SecurityConfig.createList("permitAll"));
 		
 		DefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
 		

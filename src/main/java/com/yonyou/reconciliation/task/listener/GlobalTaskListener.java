@@ -46,12 +46,12 @@ public class GlobalTaskListener implements JobListener {
 
 	@Override
 	public void jobToBeExecuted(JobExecutionContext context) {
-		LOGGER.info("jobToBeExecuted");
+		LOGGER.debug("jobToBeExecuted");
 		Long taskId = (Long) context.getJobDetail().getJobDataMap().getLong(TASK_ID);
 		
 		Task task = this.taskService.findOne(taskId);
 		
-		TaskInstance taskInstance = this.generateTaskInstance(task);
+		TaskInstance taskInstance = this.generateTaskInstance(task, context.getFireTime());
 		this.taskInstanceService.save(taskInstance);
 		context.put(TASK_INSTANCE_ID, taskInstance.getId());
 
@@ -59,14 +59,14 @@ public class GlobalTaskListener implements JobListener {
 		context.put(TASK_ID, task.getId());
 	}
 	
-	private TaskInstance generateTaskInstance(Task task) {
+	private TaskInstance generateTaskInstance(Task task, Date executeDate) {
 		TaskInstance taskInstance = new TaskInstance();
 		taskInstance.setTaskName(task.getTaskName());
 		taskInstance.setTaskGroup(task.getTaskGroup());
 		taskInstance.setTaskInstanceStatus(TaskInstanceStatus.RUNNING);
 		taskInstance.setTask(task);
 		taskInstance.setCreateDate(new Date());
-		taskInstance.setExecuteDate(new Date());
+		taskInstance.setExecuteDate(executeDate);
 		
 		List<TaskAttribute> taskAttributes = this.taskAttributeService.findByTask(task);
 		
@@ -92,12 +92,12 @@ public class GlobalTaskListener implements JobListener {
 
 	@Override
 	public void jobExecutionVetoed(JobExecutionContext context) {
-		LOGGER.info("jobExecutionVetoed");
+		LOGGER.debug("jobExecutionVetoed");
 	}
 
 	@Override
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-		LOGGER.info("jobWasExecuted");
+		LOGGER.debug("jobWasExecuted");
 		
 		Long taskId = (Long) context.get(TASK_ID);
 		Long taskInstanceId = (Long) context.get(TASK_INSTANCE_ID);

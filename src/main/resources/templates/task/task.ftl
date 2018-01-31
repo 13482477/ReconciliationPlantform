@@ -1,4 +1,5 @@
 <#include "/layout/mainLayout.ftl" encoding="utf8">
+<#include "/layout/authorize.ftl" encoding="utf8">
 <@base baseTitle="定时任务管理" 
 		baseCss=[
 		"/lib/bootstrap/dist/css/bootstrap.min.css",
@@ -48,7 +49,8 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="box box-primary">
-			<div class="box-header with-border">定时任务</div>
+			<div class="box-header with-border">定时任务
+			</div>
 			<div class="box-body">
 				<div id="searchBar" class="form-inline" role="form">
 					<div class="form-group">
@@ -80,21 +82,27 @@
 				</div>
 				<div id="toolbar">
 					<div class="form-inline" role="form">
+						<@authorize ifAnyGranted="role_task_create">
 						<div class="form-group">
 							<a href="javascript: void(0);" id="createButton" class="btn btn-success btn-flat btn-sm" title="新增">
 								<i class="glyphicon glyphicon-file"></i>
 							</a>
 						</div>
+						</@authorize>
+						<@authorize ifAnyGranted="role_task_update">
 						<div class="form-group">
 							<a href="javascript: void(0);" id="updateButton" class="btn btn-warning btn-flat btn-sm" title="修改">
 								<i class="glyphicon glyphicon-edit"></i>
 							</a>
 						</div>
+						</@authorize>
+						<@authorize ifAnyGranted="role_task_delete">
 						<div class="form-group">
 							<a href="javascript: void(0);" id="deleteButton" class="btn btn-danger btn-flat btn-sm" title="删除">
 								<i class="glyphicon glyphicon-trash"></i>
 							</a>
 						</div>
+						</@authorize>
 					</div>
 				</div>
 				<table id="table" >

@@ -12,7 +12,8 @@ public class SimpleJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		LOGGER.info("JOB EXECUTE");
+		LOGGER.debug("JOB EXECUTE");
+		
 	}
 
 }
